@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:3000"
+    depends_on:
+      - nats
+    networks:
+      - app-network
+
+  worker:
+    build: ./worker
+    depends_on:
+      - nats
+      - redis
+      - minio
+    environment:
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    networks:
+      - app-network
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    networks:
+      - app-network
+
+  injector:
+    build: ./injector
+    depends_on:
+      - nats
+      - redis
+      - minio
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  minio:
+    image: 'minio/minio:latest'
+    volumes:
+      - minio_storage:/data
+    ports:
+      - "9000:9000"
+      - '9001:9001'
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+      MINIO_DEFAULT_BUCKETS: repositorios
+    command: server --console-address ":9001" /data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  minio_storage: {}
