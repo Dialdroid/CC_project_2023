@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Repository</title>
+</head>
+<body>
+    <form id="repoForm">
+        <input type="text" id="repoUrl" placeholder="Enter GitHub repo URL" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('repoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const repoUrl = document.getElementById('repoUrl').value;
+            
+            fetch('/submit-repo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repoUrl }),
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert('Error submitting URL'));
+        });
+    </script>
+</body>
+</html>
