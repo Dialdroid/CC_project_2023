@@ -1,0 +1,15 @@
+{
+  "name": "observer",
+  "version": "1.0.0",
+  "description": "Observer service for NATS",
+  "main": "observer.js",
+  "scripts": {
+    "start": "node observer.js"
+  },
+  "dependencies": {
+    "nats": "latest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
